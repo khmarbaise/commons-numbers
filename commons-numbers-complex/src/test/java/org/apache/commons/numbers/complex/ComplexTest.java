@@ -17,9 +17,10 @@
 
 package org.apache.commons.numbers.complex;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-import org.apache.commons.numbers.complex.Complex;
+import org.assertj.core.data.Offset;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -76,6 +77,8 @@ public class ComplexTest {
     public void testAbs() {
         Complex z = Complex.ofCartesian(3.0, 4.0);
         Assert.assertEquals(5.0, z.abs(), 1.0e-5);
+
+        assertThat(z.abs()).isEqualTo(5.0, Offset.offset(1.0e-5));
     }
 
     @Test
@@ -83,8 +86,11 @@ public class ComplexTest {
         Assert.assertTrue(Double.isNaN(NAN.abs()));
         Complex z = Complex.ofCartesian(inf, nan);
         Assert.assertTrue(Double.isNaN(z.abs()));
+
+        assertThat(z.abs()).isNaN();
     }
 
+    private static final Offset EPSILON = Offset.offset(1.0e-5);
     @Test
     public void testAdd() {
         Complex x = Complex.ofCartesian(3.0, 4.0);
@@ -92,6 +98,9 @@ public class ComplexTest {
         Complex z = x.add(y);
         Assert.assertEquals(8.0, z.getReal(), 1.0e-5);
         Assert.assertEquals(10.0, z.getImaginary(), 1.0e-5);
+
+        assertThat(z.getReal()).isEqualTo(8.0, EPSILON);
+        assertThat(z.getImaginary()).isEqualTo(10.0, EPSILON);
     }
 
     @Test
@@ -172,6 +181,8 @@ public class ComplexTest {
         Complex y = Complex.ofCartesian(2d, 0d);
         Assert.assertEquals(Complex.ofCartesian(1d, 1.5), x.divide(y));
 
+        assertThat(x.divide(y))
+            .isEqualTo(Complex.ofCartesian(1d, 1.5));
     }
 
     @Test
@@ -834,11 +845,18 @@ public class ComplexTest {
         Assert.assertTrue(Double.isNaN(nanZero.getArgument()));
         Assert.assertTrue(Double.isNaN(zeroNaN.getArgument()));
         Assert.assertTrue(Double.isNaN(NAN.getArgument()));
+
+        assertThat(nanZero.getArgument()).isNaN();
+        assertThat(zeroNaN.getArgument()).isNaN();
+        assertThat(NAN.getArgument()).isNaN();
     }
 
     @Test
     public void testParse() {
         Assert.assertTrue(Complex.ZERO.equals(Complex.parse(Complex.ZERO.toString())));
+
+        assertThat(Complex.parse(Complex.ZERO.toString())).isEqualTo(Complex.ZERO);
+
         Assert.assertTrue(Complex.ONE.equals(Complex.parse(Complex.ONE.toString())));
         Assert.assertTrue(Complex.I.equals(Complex.parse(Complex.I.toString())));
         Assert.assertTrue(Complex.INF.equals(Complex.parse(Complex.INF.toString())));
@@ -850,35 +868,47 @@ public class ComplexTest {
         Assert.assertTrue(Complex.ofCis(pi).equals(Complex.parse(Complex.ofCis(pi).toString())));
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testParseWrongStart() {
         final String re = "1.234";
         final String im = "5.678";
-        Complex.parse(re + "," + im + ")");
+
+        assertThatIllegalArgumentException().isThrownBy(() -> Complex.parse(re + "," + im + ")"))
+            .withMessage("Expected start string: (");
     }
-    @Test(expected=IllegalArgumentException.class)
+
+    @Test
     public void testParseWrongEnd() {
         final String re = "1.234";
         final String im = "5.678";
-        Complex.parse("(" + re + "," + im);
+        assertThatIllegalArgumentException().isThrownBy(() -> Complex.parse("(" + re + "," + im))
+            .withMessage("Expected end string: )");
     }
-    @Test(expected=IllegalArgumentException.class)
+
+    @Test
     public void testParseMissingSeparator() {
         final String re = "1.234";
         final String im = "5.678";
-        Complex.parse("(" + re + " " + im + ")");
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> Complex.parse("(" + re + " " + im + ")"))
+            .withMessage("Incorrect number of parts: Expected 2 but was 1 (separator is ',')");
     }
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testParseInvalidRe() {
         final String re = "I.234";
         final String im = "5.678";
-        Complex.parse("(" + re + "," + im + ")");
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> Complex.parse("(" + re + "," + im + ")"))
+            .withMessage("Could not parse real partI.234");
     }
-    @Test(expected=IllegalArgumentException.class)
+
+    @Test
     public void testParseInvalidIm() {
         final String re = "1.234";
         final String im = "5.G78";
-        Complex.parse("(" + re + "," + im + ")");
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> Complex.parse("(" + re + "," + im + ")"))
+            .withMessage("Could not parse imaginary part5.G78");
     }
 
     @Test
@@ -886,6 +916,7 @@ public class ComplexTest {
         final double re = 1.234;
         final double im = 5.678;
         final String str = "(  " + re + "  , " + im + "     )";
-        Assert.assertTrue(Complex.ofCartesian(re, im).equals(Complex.parse(str)));
+
+        assertThat(Complex.parse(str)).isEqualTo(Complex.ofCartesian(re, im));
     }
 }
