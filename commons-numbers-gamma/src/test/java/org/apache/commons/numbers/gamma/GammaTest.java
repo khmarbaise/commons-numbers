@@ -16,7 +16,9 @@
  */
 package org.apache.commons.numbers.gamma;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
+
 import org.junit.Test;
 
 /**
@@ -527,14 +529,14 @@ public class GammaTest {
                 ulps = 500;
             }
             final double tol = ulps * Math.ulp(expected);
-            Assert.assertEquals(Double.toString(x), expected, actual, tol);
+            assertThat(actual).as(Double.toString(x)).isCloseTo(expected, offset(tol));
         }
     }
 
     @Test
     public void testGammaNegativeInteger() {
         for (int i = -100; i <= 0; i++) {
-            Assert.assertTrue(Integer.toString(i), Double.isNaN(Gamma.value(i)));
+            assertThat(Double.isNaN(Gamma.value(i))).as(Integer.toString(i)).isTrue();
         }
     }
 
@@ -546,8 +548,7 @@ public class GammaTest {
         double previousGamma = Gamma.value(-18.5);
         for (double x = -19.5; x > -25; x -= 1.0) {
             double gamma = Gamma.value(x);
-            Assert.assertEquals(  (int) Math.signum(previousGamma),
-                                - (int) Math.signum(gamma));
+            assertThat(-(int) Math.signum(gamma)).isEqualTo((int) Math.signum(previousGamma));
 
             previousGamma = gamma;
         }

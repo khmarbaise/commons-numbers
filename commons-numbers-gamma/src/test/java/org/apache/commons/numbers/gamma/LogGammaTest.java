@@ -16,7 +16,9 @@
  */
 package org.apache.commons.numbers.gamma;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
+
 import org.junit.Test;
 
 /**
@@ -209,22 +211,22 @@ public class LogGammaTest {
             } else {
                 tol = ulps * Math.ulp(expected);
             }
-            Assert.assertEquals(Double.toString(x), expected, actual, tol);
+            assertThat(actual).as(Double.toString(x)).isCloseTo(expected, offset(tol));
         }
     }
 
     @Test
     public void testLogGammaPrecondition1() {
-        Assert.assertTrue(Double.isNaN(LogGamma.value(0.0)));
+        assertThat(Double.isNaN(LogGamma.value(0.0))).isTrue();
     }
 
     @Test
     public void testLogGammaPrecondition2() {
-        Assert.assertTrue(Double.isNaN(LogGamma.value(-1.0)));
+        assertThat(Double.isNaN(LogGamma.value(-1.0))).isTrue();
     }
 
     private void testLogGamma(double expected, double x) {
         double actual = LogGamma.value(x);
-        Assert.assertEquals(expected, actual, 1e-15);
+        assertThat(actual).isCloseTo(expected, offset(1e-15));
     }
 }

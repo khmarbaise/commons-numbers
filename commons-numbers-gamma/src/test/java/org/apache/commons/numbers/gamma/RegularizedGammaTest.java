@@ -16,7 +16,9 @@
  */
 package org.apache.commons.numbers.gamma;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
+
 import org.junit.Test;
 
 /**
@@ -61,7 +63,7 @@ public class RegularizedGammaTest {
     private void testRegularizedGamma(double expected, double a, double x) {
         double actualP = RegularizedGamma.P.value(a, x);
         double actualQ = RegularizedGamma.Q.value(a, x);
-        Assert.assertEquals(expected, actualP, 1e-15);
-        Assert.assertEquals(actualP, 1 - actualQ, 1e-15);
+        assertThat(actualP).isCloseTo(expected, offset(1e-15));
+        assertThat(1 - actualQ).isCloseTo(actualP, offset(1e-15));
     }
 }

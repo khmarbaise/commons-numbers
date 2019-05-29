@@ -16,7 +16,9 @@
  */
 package org.apache.commons.numbers.gamma;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
+
 import org.junit.Test;
 
 /**
@@ -25,15 +27,15 @@ import org.junit.Test;
 public class LanczosApproximationTest {
     @Test
     public void testG() {
-        Assert.assertEquals(607d / 128d, LanczosApproximation.g(), 0d);
+        assertThat(LanczosApproximation.g()).isCloseTo(607d / 128d, offset(0d));
     }
 
     @Test
     public void testSomeValues() {
         // Given that few values are checked, this test would only serve
         // as early warning of unexpected changes to the current code.
-        Assert.assertEquals(29.020294557631818d, LanczosApproximation.value(0.1d), 0d);
-        Assert.assertEquals(13.14778027539684d, LanczosApproximation.value(1.0d), 0d);
-        Assert.assertEquals(7.897828855157814d, LanczosApproximation.value(2.0d), 0d);
+        assertThat(LanczosApproximation.value(0.1d)).isCloseTo(29.020294557631818d, offset(0d));
+        assertThat(LanczosApproximation.value(1.0d)).isCloseTo(13.14778027539684d, offset(0d));
+        assertThat(LanczosApproximation.value(2.0d)).isCloseTo(7.897828855157814d, offset(0d));
     }
 }

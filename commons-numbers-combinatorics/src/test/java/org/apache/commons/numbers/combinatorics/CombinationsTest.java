@@ -16,10 +16,11 @@
  */
 package org.apache.commons.numbers.combinatorics;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Iterator;
 import java.util.Comparator;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -30,13 +31,13 @@ public class CombinationsTest {
     public void testAccessor1() {
         final int n = 5;
         final int k = 3;
-        Assert.assertEquals(n, new Combinations(n, k).getN());
+        assertThat(new Combinations(n, k).getN()).isEqualTo(n);
     }
     @Test
     public void testAccessor2() {
         final int n = 5;
         final int k = 3;
-        Assert.assertEquals(k, new Combinations(n, k).getK());
+        assertThat(new Combinations(n, k).getK()).isEqualTo(k);
     }
 
     @Test
@@ -91,8 +92,8 @@ public class CombinationsTest {
         final int k = 6;
         final Combinations.LexicographicComparator comp =
             new Combinations.LexicographicComparator(n, k);
-        Assert.assertEquals(n, comp.getN());
-        Assert.assertEquals(k, comp.getK());
+        assertThat(comp.getN()).isEqualTo(n);
+        assertThat(comp.getK()).isEqualTo(k);
     }
 
     @Test
@@ -100,12 +101,12 @@ public class CombinationsTest {
         final int n = 5;
         final int k = 3;
         final Comparator<int[]> comp = new Combinations.LexicographicComparator(n, k);
-        Assert.assertEquals(1, comp.compare(new int[] {1, 2, 4},
-                                            new int[] {1, 2, 3}));
-        Assert.assertEquals(-1, comp.compare(new int[] {0, 1, 4},
-                                             new int[] {0, 2, 4}));
-        Assert.assertEquals(0, comp.compare(new int[] {1, 3, 4},
-                                            new int[] {1, 3, 4}));
+        assertThat(comp.compare(new int[]{1, 2, 4},
+            new int[]{1, 2, 3})).isEqualTo(1);
+        assertThat(comp.compare(new int[]{0, 1, 4},
+            new int[]{0, 2, 4})).isEqualTo(-1);
+        assertThat(comp.compare(new int[]{1, 3, 4},
+            new int[]{1, 3, 4})).isEqualTo(0);
     }
 
     /**
@@ -116,36 +117,36 @@ public class CombinationsTest {
         final int n = 5;
         final int k = 3;
         final Comparator<int[]> comp = new Combinations.LexicographicComparator(n, k);
-        Assert.assertEquals(1, comp.compare(new int[] {1, 4, 2},
-                                            new int[] {1, 3, 2}));
-        Assert.assertEquals(-1, comp.compare(new int[] {0, 4, 1},
-                                             new int[] {0, 4, 2}));
-        Assert.assertEquals(0, comp.compare(new int[] {1, 4, 3},
-                                            new int[] {1, 3, 4}));
+        assertThat(comp.compare(new int[]{1, 4, 2},
+            new int[]{1, 3, 2})).isEqualTo(1);
+        assertThat(comp.compare(new int[]{0, 4, 1},
+            new int[]{0, 4, 2})).isEqualTo(-1);
+        assertThat(comp.compare(new int[]{1, 4, 3},
+            new int[]{1, 3, 4})).isEqualTo(0);
     }
 
     @Test
     public void testEmptyCombination() {
         final Iterator<int[]> iter = new Combinations(12345, 0).iterator();
-        Assert.assertTrue(iter.hasNext());
+        assertThat(iter.hasNext()).isTrue();
         final int[] c = iter.next();
-        Assert.assertEquals(0, c.length);
-        Assert.assertFalse(iter.hasNext());
+        assertThat(c.length).isEqualTo(0);
+        assertThat(iter.hasNext()).isFalse();
     }
 
     @Test
     public void testFullSetCombination() {
         final int n = 67;
         final Iterator<int[]> iter = new Combinations(n, n).iterator();
-        Assert.assertTrue(iter.hasNext());
+        assertThat(iter.hasNext()).isTrue();
         final int[] c = iter.next();
-        Assert.assertEquals(n, c.length);
+        assertThat(c.length).isEqualTo(n);
 
         for (int i = 0; i < n; i++) {
-            Assert.assertEquals(i, c[i]);
+            assertThat(c[i]).isEqualTo(i);
         }
 
-        Assert.assertFalse(iter.hasNext());
+        assertThat(iter.hasNext()).isFalse();
     }
 
     /**
@@ -163,16 +164,16 @@ public class CombinationsTest {
 
         long numIterates = 0;
         for (int[] iterate : new Combinations(n, k)) {
-            Assert.assertEquals(k, iterate.length);
+            assertThat(iterate.length).isEqualTo(k);
 
             // Check that the sequence of iterates is ordered.
             if (lastIterate != null) {
-                Assert.assertTrue(comp.compare(iterate, lastIterate) == 1);
+                assertThat(comp.compare(iterate, lastIterate) == 1).isTrue();
             }
 
             // Check that each iterate is ordered.
             for (int i = 1; i < iterate.length; i++) {
-                Assert.assertTrue(iterate[i] > iterate[i - 1]);
+                assertThat(iterate[i] > iterate[i - 1]).isTrue();
             }
 
             lastIterate = iterate;
@@ -180,7 +181,7 @@ public class CombinationsTest {
         }
 
         // Check the number of iterates.
-        Assert.assertEquals(BinomialCoefficient.value(n, k), numIterates);
+        assertThat(numIterates).isEqualTo(BinomialCoefficient.value(n, k));
     }
 
     @Test(expected=IllegalArgumentException.class)

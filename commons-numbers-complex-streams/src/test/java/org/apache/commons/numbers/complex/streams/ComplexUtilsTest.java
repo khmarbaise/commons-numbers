@@ -17,9 +17,13 @@
 
 package org.apache.commons.numbers.complex.streams;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.assertj.core.data.Offset.offset;
+
 import org.apache.commons.numbers.complex.Complex;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -265,9 +269,9 @@ public class ComplexUtilsTest {
             theta1D[5-i] = theta1D[5 + i + 1] - pi/6;
         }
         Complex[] observed1D = ComplexUtils.polar2Complex(r1D, theta1D);
-        Assert.assertEquals(r1D.length, observed1D.length);
+        assertThat(observed1D.length).isEqualTo(r1D.length);
         for (int i = 0; i < r1D.length; i++) {
-            Assert.assertEquals(ComplexUtils.polar2Complex(r1D[i], theta1D[i]), observed1D[i]);
+            assertThat(observed1D[i]).isEqualTo(ComplexUtils.polar2Complex(r1D[i], theta1D[i]));
         }
 
         // 2D
@@ -280,7 +284,7 @@ public class ComplexUtilsTest {
             }
         }
         Complex[][] observed2D = ComplexUtils.polar2Complex(r2D, theta2D);
-        Assert.assertEquals(r2D.length, observed2D.length);
+        assertThat(observed2D.length).isEqualTo(r2D.length);
         for (int i = 0; i < r2D.length; i++) {
             TestUtils.assertSame(msg, ComplexUtils.polar2Complex(r2D[i], theta2D[i]), observed2D[i]);
         }
@@ -297,7 +301,7 @@ public class ComplexUtilsTest {
             }
         }
         Complex[][][] observed3D = ComplexUtils.polar2Complex(r3D, theta3D);
-        Assert.assertEquals(r3D.length, observed3D.length);
+        assertThat(observed3D.length).isEqualTo(r3D.length);
         for (int i = 0; i < r3D.length; i++) {
             TestUtils.assertSame(msg, ComplexUtils.polar2Complex(r3D[i], theta3D[i]), observed3D[i]);
         }
@@ -307,37 +311,49 @@ public class ComplexUtilsTest {
         return Complex.I.multiply(Complex.ofCartesian(theta, 0)).exp().multiply(Complex.ofCartesian(r, 0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPolar2ComplexIllegalModulus() {
-        ComplexUtils.polar2Complex(-1, 0);
+        assertThatIllegalStateException().isThrownBy(() -> ComplexUtils.polar2Complex(-1, 0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPolar2ComplexIllegalModulus1D() {
-        ComplexUtils.polar2Complex(new double[]{0, -1, 2}, new double[]{0, 1, 2});
+        assertThatIllegalArgumentException().isThrownBy(
+          () -> ComplexUtils.polar2Complex(new double[]{0, -1, 2}, new double[]{0, 1, 2}));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPolar2ComplexIllegalModulus2D() {
-        ComplexUtils.polar2Complex(new double[][]{{0, 2, 2}, {0, -1, 2}}, new double[][]{{0, 1, 2}, {0, 1, 2}});
+        assertThatIllegalArgumentException().isThrownBy(() -> ComplexUtils
+            .polar2Complex(new double[][]{{0, 2, 2}, {0, -1, 2}},
+              new double[][]{{0, 1, 2}, {0, 1, 2}}));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testPolar2ComplexIllegalModulus3D() {
-        ComplexUtils.polar2Complex(new double[][][]{{{0, 2, 2}}, {{0, -1, 2}}}, new double[][][]{{{0, 1, 2}}, {{0, 1, 2}}});
+        assertThatIllegalArgumentException().isThrownBy(() -> ComplexUtils
+            .polar2Complex(new double[][][]{{{0, 2, 2}}, {{0, -1, 2}}},
+                new double[][][]{{{0, 1, 2}}, {{0, 1, 2}}}));
     }
 
     @Test
     public void testPolar2ComplexNaN() {
         TestUtils.assertSame(NAN, ComplexUtils.polar2Complex(nan, 1));
+        ComplexAssert.assertThat(ComplexUtils.polar2Complex(nan, 1)).isNaN();
+
         TestUtils.assertSame(NAN, ComplexUtils.polar2Complex(1, nan));
+        ComplexAssert.assertThat(ComplexUtils.polar2Complex(1, nan)).isNaN();
+
         TestUtils.assertSame(NAN, ComplexUtils.polar2Complex(nan, nan));
+        ComplexAssert.assertThat(ComplexUtils.polar2Complex(nan, nan)).isNaN();
     }
 
     @Test
     public void testPolar2ComplexInf() {
         TestUtils.assertSame(NAN, ComplexUtils.polar2Complex(1, inf));
+
         TestUtils.assertSame(NAN, ComplexUtils.polar2Complex(1, negInf));
+
         TestUtils.assertSame(NAN, ComplexUtils.polar2Complex(inf, inf));
         TestUtils.assertSame(NAN, ComplexUtils.polar2Complex(inf, negInf));
         TestUtils.assertSame(infInf, ComplexUtils.polar2Complex(inf, pi / 4));
@@ -353,7 +369,7 @@ public class ComplexUtilsTest {
         final Complex[] complex = ComplexUtils.real2Complex(real);
 
         for (int i = 0; i < real.length; i++) {
-            Assert.assertEquals(real[i], complex[i].getReal(), 0d);
+            assertThat(complex[i].getReal()).isCloseTo(real[i], offset(0d));
         }
     }
 
@@ -702,7 +718,7 @@ public class ComplexUtilsTest {
     public void testAbs() {
         setArrays();
         double[] observed = ComplexUtils.abs(c);
-        Assert.assertEquals(c.length, observed.length);
+        assertThat(observed.length).isEqualTo(c.length);
         for (int i = 0; i < c.length; i++) {
             TestUtils.assertEquals(c[i].abs(), observed[i], 0);
         }
@@ -712,7 +728,7 @@ public class ComplexUtilsTest {
     public void testArg() {
         setArrays();
         double[] observed = ComplexUtils.arg(c);
-        Assert.assertEquals(c.length, observed.length);
+        assertThat(observed.length).isEqualTo(c.length);
         for (int i = 0; i < c.length; i++) {
             TestUtils.assertEquals(c[i].getArgument(), observed[i], 0);
         }

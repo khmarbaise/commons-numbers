@@ -16,7 +16,8 @@
  */
 package org.apache.commons.numbers.combinatorics;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 
 /**
@@ -25,13 +26,13 @@ import org.junit.Test;
 public class FactorialTest {
     @Test
     public void testFactorialZero() {
-        Assert.assertEquals("0!", 1, Factorial.value(0));
+        assertThat(Factorial.value(0)).as("0!").isEqualTo(1);
     }
 
     @Test
     public void testFactorial() {
         for (int i = 1; i < 21; i++) {
-            Assert.assertEquals(i + "!", factorial(i), Factorial.value(i));
+            assertThat(Factorial.value(i)).as(i + "!").isEqualTo(factorial(i));
         }
     }
 

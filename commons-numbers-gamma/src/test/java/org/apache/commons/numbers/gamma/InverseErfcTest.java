@@ -16,7 +16,9 @@
  */
 package org.apache.commons.numbers.gamma;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
+
 import org.junit.Test;
 
 /**
@@ -25,16 +27,16 @@ import org.junit.Test;
 public class InverseErfcTest {
     @Test
     public void testErfcInvNaN() {
-        Assert.assertTrue(Double.isNaN(InverseErfc.value(-0.001)));
-        Assert.assertTrue(Double.isNaN(InverseErfc.value(+2.001)));
+        assertThat(Double.isNaN(InverseErfc.value(-0.001))).isTrue();
+        assertThat(Double.isNaN(InverseErfc.value(+2.001))).isTrue();
     }
 
     @Test
     public void testErfcInvInfinite() {
-        Assert.assertTrue(Double.isInfinite(InverseErfc.value(-0)));
-        Assert.assertTrue(InverseErfc.value( 0) > 0);
-        Assert.assertTrue(Double.isInfinite(InverseErfc.value(+2)));
-        Assert.assertTrue(InverseErfc.value(+2) < 0);
+        assertThat(Double.isInfinite(InverseErfc.value(-0))).isTrue();
+        assertThat(InverseErfc.value(0) > 0).isTrue();
+        assertThat(Double.isInfinite(InverseErfc.value(+2))).isTrue();
+        assertThat(InverseErfc.value(+2) < 0).isTrue();
     }
 
     @Test
@@ -42,7 +44,7 @@ public class InverseErfcTest {
         for (double x = -5.85; x < 5.9; x += 0.01) {
             final double y = Erfc.value(x);
             final double dydxAbs = 2 * Math.exp(-x * x) / Math.sqrt(Math.PI);
-            Assert.assertEquals(x, InverseErfc.value(y), 1.0e-15 / dydxAbs);
+            assertThat(InverseErfc.value(y)).isCloseTo(x, offset(1.0e-15 / dydxAbs));
         }
     }
 }

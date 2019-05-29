@@ -16,7 +16,9 @@
  */
 package org.apache.commons.numbers.gamma;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
+
 import org.junit.Test;
 
 /**
@@ -73,7 +75,7 @@ public class InvGamma1pm1Test {
             final double expected = ref[1];
             final double actual = InvGamma1pm1.value(x);
             final double tol = ulps * Math.ulp(expected);
-            Assert.assertEquals(Double.toString(x), expected, actual, tol);
+            assertThat(actual).as(Double.toString(x)).isCloseTo(expected, offset(tol));
         }
     }
 

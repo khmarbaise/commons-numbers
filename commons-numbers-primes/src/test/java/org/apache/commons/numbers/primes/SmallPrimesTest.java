@@ -16,11 +16,12 @@
  */
 package org.apache.commons.numbers.primes;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class SmallPrimesTest {
@@ -32,24 +33,24 @@ public class SmallPrimesTest {
     public void smallTrialDivision_smallComposite() {
         final List<Integer> factors = new ArrayList<Integer>();
         final int result = SmallPrimes.smallTrialDivision(3*7*23, factors);
-        Assert.assertEquals(1, result);
-        Assert.assertEquals(Arrays.asList(3, 7, 23), factors);
+        assertThat(result).isEqualTo(1);
+        assertThat(factors).isEqualTo(Arrays.asList(3, 7, 23));
     }
 
     @Test
     public void smallTrialDivision_repeatedFactors() {
         final List<Integer> factors = new ArrayList<Integer>();
         final int result = SmallPrimes.smallTrialDivision(2*2*3*3*3, factors);
-        Assert.assertEquals(1, result);
-        Assert.assertEquals(Arrays.asList(2, 2, 3, 3, 3), factors);
+        assertThat(result).isEqualTo(1);
+        assertThat(factors).isEqualTo(Arrays.asList(2, 2, 3, 3, 3));
     }
 
     @Test
     public void smallTrialDivision_oneFactor() {
         final List<Integer> factors = new ArrayList<Integer>();
         final int result = SmallPrimes.smallTrialDivision(59, factors);
-        Assert.assertEquals(1, result);
-        Assert.assertEquals(Collections.singletonList(59), factors);
+        assertThat(result).isEqualTo(1);
+        assertThat(factors).isEqualTo(Collections.singletonList(59));
     }
 
     @Test
@@ -57,77 +58,77 @@ public class SmallPrimesTest {
         final List<Integer> factors = new ArrayList<Integer>();
         final int penultimatePrime = SmallPrimes.PRIMES[SmallPrimes.PRIMES.length-2];
         final int result = SmallPrimes.smallTrialDivision(penultimatePrime*SmallPrimes.PRIMES_LAST, factors);
-        Assert.assertEquals(1, result);
-        Assert.assertEquals(Arrays.asList(penultimatePrime, SmallPrimes.PRIMES_LAST), factors);
+        assertThat(result).isEqualTo(1);
+        assertThat(factors).isEqualTo(Arrays.asList(penultimatePrime, SmallPrimes.PRIMES_LAST));
     }
 
     @Test
     public void smallTrialDivision_largeComposite() {
         final List<Integer> factors = new ArrayList<Integer>();
         final int result = SmallPrimes.smallTrialDivision(2*5*LARGE_PRIME[0], factors);
-        Assert.assertEquals(LARGE_PRIME[0], result);
-        Assert.assertEquals(Arrays.asList(2, 5), factors);
+        assertThat(result).isEqualTo(LARGE_PRIME[0]);
+        assertThat(factors).isEqualTo(Arrays.asList(2, 5));
     }
 
     @Test
     public void smallTrialDivision_noSmallPrimeFactors() {
         final List<Integer> factors = new ArrayList<Integer>();
         final int result = SmallPrimes.smallTrialDivision(LARGE_PRIME[0]*LARGE_PRIME[1], factors);
-        Assert.assertEquals(LARGE_PRIME[0]*LARGE_PRIME[1], result);
-        Assert.assertEquals(Collections.<Integer>emptyList(), factors);
+        assertThat(result).isEqualTo(LARGE_PRIME[0] * LARGE_PRIME[1]);
+        assertThat(factors).isEqualTo(Collections.<Integer>emptyList());
     }
     
     @Test
     public void boundedTrialDivision_twoDifferentFactors() {
         final List<Integer> factors = new ArrayList<Integer>();
         final int result = SmallPrimes.boundedTrialDivision(LARGE_PRIME[0]*LARGE_PRIME[1], Integer.MAX_VALUE, factors);
-        Assert.assertEquals(LARGE_PRIME[1], result);
-        Assert.assertEquals(Arrays.asList(LARGE_PRIME[0], LARGE_PRIME[1]), factors);
+        assertThat(result).isEqualTo(LARGE_PRIME[1]);
+        assertThat(factors).isEqualTo(Arrays.asList(LARGE_PRIME[0], LARGE_PRIME[1]));
     }
 
     @Test
     public void boundedTrialDivision_square() {
         final List<Integer> factors = new ArrayList<Integer>();
         final int result = SmallPrimes.boundedTrialDivision(LARGE_PRIME[0]*LARGE_PRIME[0], Integer.MAX_VALUE, factors);
-        Assert.assertEquals(LARGE_PRIME[0], result);
-        Assert.assertEquals(Arrays.asList(LARGE_PRIME[0], LARGE_PRIME[0]), factors);
+        assertThat(result).isEqualTo(LARGE_PRIME[0]);
+        assertThat(factors).isEqualTo(Arrays.asList(LARGE_PRIME[0], LARGE_PRIME[0]));
     }
 
     @Test
     public void trialDivision_smallComposite() {
         final List<Integer> factors = SmallPrimes.trialDivision(5*11*29*103);
-        Assert.assertEquals(Arrays.asList(5, 11, 29, 103), factors);
+        assertThat(factors).isEqualTo(Arrays.asList(5, 11, 29, 103));
     }
 
     @Test
     public void trialDivision_repeatedFactors() {
         final List<Integer> factors = SmallPrimes.trialDivision(2*2*2*2*5*5);
-        Assert.assertEquals(Arrays.asList(2, 2, 2, 2, 5, 5), factors);
+        assertThat(factors).isEqualTo(Arrays.asList(2, 2, 2, 2, 5, 5));
     }
 
     @Test
     public void trialDivision_oneSmallFactor() {
         final List<Integer> factors = SmallPrimes.trialDivision(101);
-        Assert.assertEquals(Collections.singletonList(101), factors);
+        assertThat(factors).isEqualTo(Collections.singletonList(101));
     }
 
     @Test
     public void trialDivision_largeComposite() {
         final List<Integer> factors = SmallPrimes.trialDivision(2*3*LARGE_PRIME[0]);
-        Assert.assertEquals(Arrays.asList(2, 3, LARGE_PRIME[0]), factors);
+        assertThat(factors).isEqualTo(Arrays.asList(2, 3, LARGE_PRIME[0]));
     }
 
     @Test
     public void trialDivision_veryLargeComposite() {
         final List<Integer> factors = SmallPrimes.trialDivision(2*LARGE_PRIME[0]*LARGE_PRIME[1]);
-        Assert.assertEquals(Arrays.asList(2, LARGE_PRIME[0], LARGE_PRIME[1]), factors);
+        assertThat(factors).isEqualTo(Arrays.asList(2, LARGE_PRIME[0], LARGE_PRIME[1]));
     }
 
     @Test
     public void millerRabinPrimeTest_primes() {
         for (final int n : PrimesTest.PRIMES) {
             if (n % 2 == 1) {
-                Assert.assertTrue(SmallPrimes.millerRabinPrimeTest(n));
+                assertThat(SmallPrimes.millerRabinPrimeTest(n)).isTrue();
             }
         }
     }
@@ -136,7 +137,7 @@ public class SmallPrimesTest {
     public void millerRabinPrimeTest_composites() {
         for (final int n : PrimesTest.NOT_PRIMES) {
             if (n %2 == 1) {
-                Assert.assertFalse(SmallPrimes.millerRabinPrimeTest(n));
+                assertThat(SmallPrimes.millerRabinPrimeTest(n)).isFalse();
             }
         }
     }

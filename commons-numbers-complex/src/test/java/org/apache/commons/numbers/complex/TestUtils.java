@@ -17,6 +17,10 @@
 
 package org.apache.commons.numbers.complex;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.data.Offset.offset;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,8 +29,6 @@ import java.io.ObjectOutputStream;
 
 import org.apache.commons.numbers.complex.Complex;
 import org.apache.commons.numbers.core.Precision;
-
-import org.junit.Assert;
 
 /**
  * Test utilities.
@@ -45,7 +47,7 @@ public class TestUtils {
      * infinities of the same sign.
      */
     public static void assertEquals(double expected, double actual, double delta) {
-        Assert.assertEquals(null, expected, actual, delta);
+        assertThat(actual).as(null).isCloseTo(expected, offset(delta));
     }
 
     /**
@@ -55,10 +57,9 @@ public class TestUtils {
     public static void assertEquals(String msg, double expected, double actual, double delta) {
         // check for NaN
         if(Double.isNaN(expected)){
-            Assert.assertTrue("" + actual + " is not NaN.",
-                Double.isNaN(actual));
+            assertThat(Double.isNaN(actual)).as("" + actual + " is not NaN.").isTrue();
         } else {
-            Assert.assertEquals(msg, expected, actual, delta);
+            assertThat(actual).as(msg).isCloseTo(expected, offset(delta));
         }
     }
 
@@ -67,7 +68,7 @@ public class TestUtils {
      * both NaN or infinities of same sign, or identical floating point values.
      */
     public static void assertSame(double expected, double actual) {
-     Assert.assertEquals(expected, actual, 0);
+     assertThat(actual).isCloseTo(expected, offset(0));
     }
 
     /**
@@ -84,8 +85,8 @@ public class TestUtils {
      * differ by at most delta.  Also ensures that NaN / infinite components match.
      */
     public static void assertEquals(Complex expected, Complex actual, double delta) {
-        Assert.assertEquals(expected.getReal(), actual.getReal(), delta);
-        Assert.assertEquals(expected.getImaginary(), actual.getImaginary(), delta);
+        assertThat(actual.getReal()).isCloseTo(expected.getReal(), offset(delta));
+        assertThat(actual.getImaginary()).isCloseTo(expected.getImaginary(), offset(delta));
     }
 
     /**
@@ -128,8 +129,8 @@ public class TestUtils {
      */
     public static void checkSerializedEquality(Object object) {
         Object object2 = serializeAndRecover(object);
-        Assert.assertEquals("Equals check", object, object2);
-        Assert.assertEquals("HashCode check", object.hashCode(), object2.hashCode());
+        assertThat(object2).as("Equals check").isEqualTo(object);
+        assertThat(object2.hashCode()).as("HashCode check").isEqualTo(object.hashCode());
     }
 
     /**
@@ -159,16 +160,16 @@ public class TestUtils {
     public static void assertRelativelyEquals(String msg, double expected,
             double actual, double relativeError) {
         if (Double.isNaN(expected)) {
-            Assert.assertTrue(msg, Double.isNaN(actual));
+            assertThat(Double.isNaN(actual)).as(msg).isTrue();
         } else if (Double.isNaN(actual)) {
-            Assert.assertTrue(msg, Double.isNaN(expected));
+            assertThat(Double.isNaN(expected)).as(msg).isTrue();
         } else if (Double.isInfinite(actual) || Double.isInfinite(expected)) {
-            Assert.assertEquals(expected, actual, relativeError);
+            assertThat(actual).isCloseTo(expected, offset(relativeError));
         } else if (expected == 0.0) {
-            Assert.assertEquals(msg, actual, expected, relativeError);
+            assertThat(expected).as(msg).isCloseTo(actual, offset(relativeError));
         } else {
             double absError = Math.abs(expected) * relativeError;
-            Assert.assertEquals(msg, expected, actual, absError);
+            assertThat(actual).as(msg).isCloseTo(expected, offset(absError));
         }
     }
 
@@ -188,7 +189,7 @@ public class TestUtils {
                 return;
             }
         }
-        Assert.fail(msg + " Unable to find " + z);
+        fail(msg + " Unable to find " + z);
     }
 
     /**
@@ -218,7 +219,7 @@ public class TestUtils {
                 return;
             }
         }
-        Assert.fail(msg + " Unable to find " + x);
+        fail(msg + " Unable to find " + x);
     }
 
     /**
@@ -242,7 +243,7 @@ public class TestUtils {
             out.append(expected.length);
             out.append(" observed length = ");
             out.append(observed.length);
-            Assert.fail(out.toString());
+            fail(out.toString());
         }
         boolean failure = false;
         for (int i=0; i < expected.length; i++) {
@@ -258,7 +259,7 @@ public class TestUtils {
             }
         }
         if (failure) {
-            Assert.fail(out.toString());
+            fail(out.toString());
         }
     }
 
@@ -271,7 +272,7 @@ public class TestUtils {
             out.append(expected.length);
             out.append(" observed length = ");
             out.append(observed.length);
-            Assert.fail(out.toString());
+            fail(out.toString());
         }
         boolean failure = false;
         for (int i=0; i < expected.length; i++) {
@@ -287,7 +288,7 @@ public class TestUtils {
             }
         }
         if (failure) {
-            Assert.fail(out.toString());
+            fail(out.toString());
         }
     }
 
@@ -300,7 +301,7 @@ public class TestUtils {
             out.append(expected.length);
             out.append(" observed length = ");
             out.append(observed.length);
-            Assert.fail(out.toString());
+            fail(out.toString());
         }
         boolean failure = false;
         for (int i=0; i < expected.length; i++) {
@@ -326,7 +327,7 @@ public class TestUtils {
             }
         }
         if (failure) {
-            Assert.fail(out.toString());
+            fail(out.toString());
         }
     }
 

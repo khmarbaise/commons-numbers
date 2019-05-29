@@ -13,7 +13,9 @@
  */
 package org.apache.commons.numbers.arrays;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
+
 import org.junit.Test;
 
 /**
@@ -25,28 +27,28 @@ public class SafeNormTest {
     public void testTiny() {
         final double s = 1e-320;
         final double[] v = new double[] { s, s };
-        Assert.assertEquals(Math.sqrt(2) * s, SafeNorm.value(v), 0d);
+        assertThat(SafeNorm.value(v)).isCloseTo(Math.sqrt(2) * s, offset(0d));
     }
 
     @Test
     public void testBig() {
         final double s = 1e300;
         final double[] v = new double[] { s, s };
-        Assert.assertEquals(Math.sqrt(2) * s, SafeNorm.value(v), 0d);
+        assertThat(SafeNorm.value(v)).isCloseTo(Math.sqrt(2) * s, offset(0d));
     }
 
     @Test
     public void testOne3D() {
         final double s = 1;
         final double[] v = new double[] { s, s, s };
-        Assert.assertEquals(Math.sqrt(3), SafeNorm.value(v), 0d);
+        assertThat(SafeNorm.value(v)).isCloseTo(Math.sqrt(3), offset(0d));
     }
 
     @Test
     public void testUnit3D() {
-        Assert.assertEquals(1, SafeNorm.value(new double[] { 1, 0, 0 }), 0d);
-        Assert.assertEquals(1, SafeNorm.value(new double[] { 0, 1, 0 }), 0d);
-        Assert.assertEquals(1, SafeNorm.value(new double[] { 0, 0, 1 }), 0d);
+        assertThat(SafeNorm.value(new double[]{1, 0, 0})).isCloseTo(1, offset(0d));
+        assertThat(SafeNorm.value(new double[]{0, 1, 0})).isCloseTo(1, offset(0d));
+        assertThat(SafeNorm.value(new double[]{0, 0, 1})).isCloseTo(1, offset(0d));
     }
 
     @Test
@@ -57,6 +59,6 @@ public class SafeNormTest {
             n += v[i] * v[i];
         }
         final double expected = Math.sqrt(n);
-        Assert.assertEquals(expected, SafeNorm.value(v), 0d);
+        assertThat(SafeNorm.value(v)).isCloseTo(expected, offset(0d));
     }
 }

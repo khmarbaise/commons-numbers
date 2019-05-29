@@ -16,7 +16,9 @@
  */
 package org.apache.commons.numbers.gamma;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
+
 import org.junit.Test;
 
 /**
@@ -35,8 +37,8 @@ public class ErfDifferenceTest {
                 double a = ErfDifference.value(x1, x2);
                 double b = Erf.value(x2) - Erf.value(x1);
                 double c = Erfc.value(x1) - Erfc.value(x2);
-                Assert.assertEquals(a, b, 1e-15);
-                Assert.assertEquals(a, c, 1e-15);
+                assertThat(b).isCloseTo(a, offset(1e-15));
+                assertThat(c).isCloseTo(a, offset(1e-15));
             }
         }
     }

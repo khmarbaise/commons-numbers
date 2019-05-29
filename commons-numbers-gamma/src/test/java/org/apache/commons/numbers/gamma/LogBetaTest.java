@@ -16,9 +16,12 @@
  */
 package org.apache.commons.numbers.gamma;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.data.Offset.offset;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -296,7 +299,7 @@ public class LogBetaTest {
             final double tol = ulps * Math.ulp(expected);
             final StringBuilder builder = new StringBuilder();
             builder.append(a).append(", ").append(b);
-            Assert.assertEquals(builder.toString(), expected, actual, tol);
+            assertThat(actual).as(builder.toString()).isCloseTo(expected, offset(tol));
         }
     }
 
@@ -339,7 +342,7 @@ public class LogBetaTest {
                              double a,
                              double b) {
         double actual = LogBeta.value(a, b);
-        Assert.assertEquals(expected, actual, 1e-15);
+        assertThat(actual).isCloseTo(expected, offset(1e-15));
     }
 
     private static final double[][] LOG_GAMMA_MINUS_LOG_GAMMA_SUM_REF = {
@@ -477,14 +480,14 @@ public class LogBetaTest {
             m.setAccessible(true);
             return ((Double) m.invoke(null, a, b)).doubleValue();
         } catch (NoSuchMethodException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         } catch (IllegalAccessException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof GammaException) {
                 throw (GammaException) e.getTargetException();
             } else {
-                Assert.fail(e.getTargetException().getMessage());
+                fail(e.getTargetException().getMessage());
             }
         }
         return Double.NaN;
@@ -502,7 +505,7 @@ public class LogBetaTest {
             final double tol = ulps * Math.ulp(expected);
             final StringBuilder builder = new StringBuilder();
             builder.append(a).append(", ").append(b);
-            Assert.assertEquals(builder.toString(), expected, actual, tol);
+            assertThat(actual).as(builder.toString()).isCloseTo(expected, offset(tol));
         }
     }
 
@@ -652,14 +655,14 @@ public class LogBetaTest {
             m.setAccessible(true);
             return ((Double) m.invoke(null, a, b)).doubleValue();
         } catch (NoSuchMethodException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         } catch (final IllegalAccessException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         } catch (final InvocationTargetException e) {
             if (e.getTargetException() instanceof GammaException) {
                 throw (GammaException) e.getTargetException();
             } else {
-                Assert.fail(e.getTargetException().getMessage());
+                fail(e.getTargetException().getMessage());
             }
         }
 
@@ -678,7 +681,7 @@ public class LogBetaTest {
             final double tol = ulps * Math.ulp(expected);
             final StringBuilder builder = new StringBuilder();
             builder.append(a).append(", ").append(b);
-            Assert.assertEquals(builder.toString(), expected, actual, tol);
+            assertThat(actual).as(builder.toString()).isCloseTo(expected, offset(tol));
         }
     }
 

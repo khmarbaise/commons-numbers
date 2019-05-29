@@ -86,8 +86,9 @@ public class FactorialDouble {
      * @throws IllegalArgumentException if {@code cacheSize < 0}.
      */
     public FactorialDouble withCache(final int cacheSize) {
-        return new FactorialDouble(cacheSize,
-                                   factorialsDouble);
+        throw new IllegalArgumentException("Test");
+//        return new FactorialDouble(cacheSize,
+//                                   factorialsDouble);
     }
 
     /**

@@ -16,8 +16,10 @@
  */
 package org.apache.commons.numbers.quaternion;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
+
 import org.apache.commons.numbers.core.Precision;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class SlerpTest {
@@ -62,8 +64,8 @@ public class SlerpTest {
             Quaternion result = slerp.apply(t);
 
             // assert
-            Assert.assertEquals(1.0, result.norm(), EPS);
-            Assert.assertTrue(result.getW() >= 0.0);
+            assertThat(result.norm()).isCloseTo(1.0, offset(EPS));
+            assertThat(result.getW() >= 0.0).isTrue();
         }
     }
 
@@ -116,8 +118,8 @@ public class SlerpTest {
             Quaternion result = slerp.apply(t);
 
             // assert
-            Assert.assertEquals(1.0, result.norm(), EPS);
-            Assert.assertTrue(result.getW() >= 0.0);
+            assertThat(result.norm()).isCloseTo(1.0, offset(EPS));
+            assertThat(result.getW() >= 0.0).isTrue();
         }
     }
 
@@ -146,7 +148,7 @@ public class SlerpTest {
         Slerp slerp = new Slerp(q1, q2);
 
         // act/assert
-        Assert.assertEquals(-1.0, q1.dot(q2), EPS);
+        assertThat(q1.dot(q2)).isCloseTo(-1.0, offset(EPS));
 
         Quaternion expected = q1.positivePolarForm();
 
@@ -184,20 +186,20 @@ public class SlerpTest {
         double[] vec = { 2, 0, 1 };
 
         // act/assert
-        Assert.assertArrayEquals(new double[] { 2, 0, 1 },
-                transformVector(slerp.apply(0), vec), EPS);
+        assertThat(transformVector(slerp.apply(0), vec))
+            .contains(new double[]{2, 0, 1}, offset(EPS));
 
-        Assert.assertArrayEquals(new double[] { SQRT_2, SQRT_2, 1 },
-                transformVector(slerp.apply(0.25), vec), EPS);
+        assertThat(transformVector(slerp.apply(0.25), vec))
+            .contains(new double[]{SQRT_2, SQRT_2, 1}, offset(EPS));
 
-        Assert.assertArrayEquals(new double[] { 0, 2, 1 },
-                transformVector(slerp.apply(0.5), vec), EPS);
+        assertThat(transformVector(slerp.apply(0.5), vec))
+            .contains(new double[]{0, 2, 1}, offset(EPS));
 
-        Assert.assertArrayEquals(new double[] { -SQRT_2, SQRT_2, 1 },
-                transformVector(slerp.apply(0.75), vec), EPS);
+        assertThat(transformVector(slerp.apply(0.75), vec))
+            .contains(new double[]{-SQRT_2, SQRT_2, 1}, offset(EPS));
 
-        Assert.assertArrayEquals(new double[] { -2, 0, 1 },
-                transformVector(slerp.apply(1), vec), EPS);
+        assertThat(transformVector(slerp.apply(1), vec))
+            .contains(new double[]{-2, 0, 1}, offset(EPS));
     }
 
     @Test
@@ -254,8 +256,8 @@ public class SlerpTest {
         double[] endVec = transformVector(end, vec);
 
         // check start and end values
-        Assert.assertArrayEquals(startVec, transformVector(slerp.apply(0), vec), EPS);
-        Assert.assertArrayEquals(endVec, transformVector(slerp.apply(1), vec), EPS);
+        assertThat(transformVector(slerp.apply(0), vec)).contains(startVec, offset(EPS));
+        assertThat(transformVector(slerp.apply(1), vec)).contains(endVec, offset(EPS));
 
         // check intermediate values
         double prevAngle = -1;
@@ -268,13 +270,13 @@ public class SlerpTest {
             double[] slerpVec = transformVector(result, vec);
 
             // the transformation should not effect the vector magnitude
-            Assert.assertEquals(vecNorm, norm(slerpVec), EPS);
+            assertThat(norm(slerpVec)).isCloseTo(vecNorm, offset(EPS));
 
             // make sure that we're steadily progressing to the end angle
             double angle = angle(slerpVec, startVec);
-            Assert.assertTrue("Expected slerp angle to continuously increase; previous angle was " +
-                  prevAngle + " and new angle is " + angle,
-                  Precision.compareTo(angle, prevAngle, EPS) >= 0);
+            assertThat(Precision.compareTo(angle, prevAngle, EPS) >= 0)
+                .as("Expected slerp angle to continuously increase; previous angle was " +
+                    prevAngle + " and new angle is " + angle).isTrue();
         }
     }
 
@@ -294,16 +296,24 @@ public class SlerpTest {
 
         // act/assert
         Slerp slerp12 = new Slerp(q1, q2);
-        Assert.assertArrayEquals(new double[] { 1, 0, 0 }, transformVector(slerp12.apply(-4.5), vec), EPS);
-        Assert.assertArrayEquals(new double[] { 1, 0, 0 }, transformVector(slerp12.apply(-0.5), vec), EPS);
-        Assert.assertArrayEquals(new double[] { -1, 0, 0 }, transformVector(slerp12.apply(1.5), vec), EPS);
-        Assert.assertArrayEquals(new double[] { -1, 0, 0 }, transformVector(slerp12.apply(5.5), vec), EPS);
+        assertThat(transformVector(slerp12.apply(-4.5), vec))
+            .contains(new double[]{1, 0, 0}, offset(EPS));
+        assertThat(transformVector(slerp12.apply(-0.5), vec))
+            .contains(new double[]{1, 0, 0}, offset(EPS));
+        assertThat(transformVector(slerp12.apply(1.5), vec))
+            .contains(new double[]{-1, 0, 0}, offset(EPS));
+        assertThat(transformVector(slerp12.apply(5.5), vec))
+            .contains(new double[]{-1, 0, 0}, offset(EPS));
 
         Slerp slerp21 = new Slerp(q2, q1);
-        Assert.assertArrayEquals(new double[] { -1, 0, 0 }, transformVector(slerp21.apply(-4.5), vec), EPS);
-        Assert.assertArrayEquals(new double[] { -1, 0, 0 }, transformVector(slerp21.apply(-0.5), vec), EPS);
-        Assert.assertArrayEquals(new double[] { 1, 0, 0 }, transformVector(slerp21.apply(1.5), vec), EPS);
-        Assert.assertArrayEquals(new double[] { 1, 0, 0 }, transformVector(slerp21.apply(5.5), vec), EPS);
+        assertThat(transformVector(slerp21.apply(-4.5), vec))
+            .contains(new double[]{-1, 0, 0}, offset(EPS));
+        assertThat(transformVector(slerp21.apply(-0.5), vec))
+            .contains(new double[]{-1, 0, 0}, offset(EPS));
+        assertThat(transformVector(slerp21.apply(1.5), vec))
+            .contains(new double[]{1, 0, 0}, offset(EPS));
+        assertThat(transformVector(slerp21.apply(5.5), vec))
+            .contains(new double[]{1, 0, 0}, offset(EPS));
     }
 
     /**
@@ -381,9 +391,9 @@ public class SlerpTest {
     private static void assertQuaternion(Quaternion expected, Quaternion actual) {
         String msg = "Expected quaternion to equal " + expected + " but was " + actual;
 
-        Assert.assertEquals(msg, expected.getW(), actual.getW(), EPS);
-        Assert.assertEquals(msg, expected.getX(), actual.getX(), EPS);
-        Assert.assertEquals(msg, expected.getY(), actual.getY(), EPS);
-        Assert.assertEquals(msg, expected.getZ(), actual.getZ(), EPS);
+        assertThat(actual.getW()).as(msg).isCloseTo(expected.getW(), offset(EPS));
+        assertThat(actual.getX()).as(msg).isCloseTo(expected.getX(), offset(EPS));
+        assertThat(actual.getY()).as(msg).isCloseTo(expected.getY(), offset(EPS));
+        assertThat(actual.getZ()).as(msg).isCloseTo(expected.getZ(), offset(EPS));
     }
 }

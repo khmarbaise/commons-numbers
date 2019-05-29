@@ -16,12 +16,13 @@
  */
 package org.apache.commons.numbers.combinatorics;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import org.apache.commons.numbers.core.ArithmeticUtils;
@@ -37,7 +38,7 @@ public class BinomialCoefficientTest {
     /** Verify that b(0,0) = 1 */
     @Test
     public void test0Choose0() {
-        Assert.assertEquals(BinomialCoefficient.value(0, 0), 1);
+        assertThat(1).isEqualTo(BinomialCoefficient.value(0, 0));
     }
 
     @Test
@@ -46,17 +47,16 @@ public class BinomialCoefficientTest {
         final long[] bcoef6 = { 1, 6, 15, 20, 15, 6, 1 };
 
         for (int i = 0; i < 6; i++) {
-            Assert.assertEquals("5 choose " + i, bcoef5[i], BinomialCoefficient.value(5, i));
+            assertThat(BinomialCoefficient.value(5, i)).as("5 choose " + i).isEqualTo(bcoef5[i]);
         }
         for (int i = 0; i < 7; i++) {
-            Assert.assertEquals("6 choose " + i, bcoef6[i], BinomialCoefficient.value(6, i));
+            assertThat(BinomialCoefficient.value(6, i)).as("6 choose " + i).isEqualTo(bcoef6[i]);
         }
 
         for (int n = 1; n < 10; n++) {
             for (int k = 0; k <= n; k++) {
-                Assert.assertEquals(n + " choose " + k,
-                                    binomialCoefficient(n, k),
-                                    BinomialCoefficient.value(n, k));
+                assertThat(BinomialCoefficient.value(n, k)).as(n + " choose " + k)
+                    .isEqualTo(binomialCoefficient(n, k));
             }
         }
 
@@ -64,9 +64,8 @@ public class BinomialCoefficientTest {
         final int[] k = { 17, 33, 10, 1500 - 4, 4 };
         for (int i = 0; i < n.length; i++) {
             final long expected = binomialCoefficient(n[i], k[i]);
-            Assert.assertEquals(n[i] + " choose " + k[i],
-                                expected,
-                                BinomialCoefficient.value(n[i], k[i]));
+            assertThat(BinomialCoefficient.value(n[i], k[i])).as(n[i] + " choose " + k[i])
+                .isEqualTo(expected);
         }
     }
 
@@ -118,24 +117,24 @@ public class BinomialCoefficientTest {
                 } catch (ArithmeticException ex) {
                     shouldThrow = true;
                 }
-                Assert.assertEquals(n + " choose " + k, exactResult, ourResult);
-                Assert.assertEquals(n + " choose " + k, shouldThrow, didThrow);
-                Assert.assertTrue(n + " choose " + k, (n > 66 || !didThrow));
+                assertThat(ourResult).as(n + " choose " + k).isEqualTo(exactResult);
+                assertThat(didThrow).as(n + " choose " + k).isEqualTo(shouldThrow);
+                assertThat((n > 66 || !didThrow)).as(n + " choose " + k).isTrue();
             }
         }
 
         long ourResult = BinomialCoefficient.value(300, 3);
         long exactResult = binomialCoefficient(300, 3);
-        Assert.assertEquals(exactResult, ourResult);
+        assertThat(ourResult).isEqualTo(exactResult);
 
         ourResult = BinomialCoefficient.value(700, 697);
         exactResult = binomialCoefficient(700, 697);
-        Assert.assertEquals(exactResult, ourResult);
+        assertThat(ourResult).isEqualTo(exactResult);
 
         final int n = 10000;
         ourResult = BinomialCoefficient.value(n, 3);
         exactResult = binomialCoefficient(n, 3);
-        Assert.assertEquals(exactResult, ourResult);
+        assertThat(ourResult).isEqualTo(exactResult);
 
     }
 

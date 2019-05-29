@@ -16,7 +16,9 @@
  */
 package org.apache.commons.numbers.gamma;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
+
 import org.junit.Test;
 
 /**
@@ -27,8 +29,8 @@ public class ErfTest {
     public void testErf0() {
         double actual = Erf.value(0);
         double expected = 0;
-        Assert.assertEquals(expected, actual, 1e-15);
-        Assert.assertEquals(1 - expected, Erfc.value(0), 1e-15);
+        assertThat(actual).isCloseTo(expected, offset(1e-15));
+        assertThat(Erfc.value(0)).isCloseTo(1 - expected, offset(1e-15));
     }
 
     @Test
@@ -36,13 +38,13 @@ public class ErfTest {
         double x = 1.960 / Math.sqrt(2);
         double actual = Erf.value(x);
         double expected = 0.95;
-        Assert.assertEquals(expected, actual, 1e-5);
-        Assert.assertEquals(1 - actual, Erfc.value(x), 1e-15);
+        assertThat(actual).isCloseTo(expected, offset(1e-5));
+        assertThat(Erfc.value(x)).isCloseTo(1 - actual, offset(1e-15));
 
         actual = Erf.value(-x);
         expected = -expected;
-        Assert.assertEquals(expected, actual, 1e-5);
-        Assert.assertEquals(1 - actual, Erfc.value(-x), 1e-15);
+        assertThat(actual).isCloseTo(expected, offset(1e-5));
+        assertThat(Erfc.value(-x)).isCloseTo(1 - actual, offset(1e-15));
     }
 
     @Test
@@ -50,13 +52,13 @@ public class ErfTest {
         double x = 2.576 / Math.sqrt(2);
         double actual = Erf.value(x);
         double expected = 0.99;
-        Assert.assertEquals(expected, actual, 1e-5);
-        Assert.assertEquals(1 - actual, Erfc.value(x), 1e-15);
+        assertThat(actual).isCloseTo(expected, offset(1e-5));
+        assertThat(Erfc.value(x)).isCloseTo(1 - actual, offset(1e-15));
 
         actual = Erf.value(-x);
         expected = -expected;
-        Assert.assertEquals(expected, actual, 1e-5);
-        Assert.assertEquals(1 - actual, Erfc.value(-x), 1e-15);
+        assertThat(actual).isCloseTo(expected, offset(1e-5));
+        assertThat(Erfc.value(-x)).isCloseTo(1 - actual, offset(1e-15));
     }
 
     @Test
@@ -64,13 +66,13 @@ public class ErfTest {
         double x = 2.807 / Math.sqrt(2);
         double actual = Erf.value(x);
         double expected = 0.995;
-        Assert.assertEquals(expected, actual, 1e-5);
-        Assert.assertEquals(1 - actual, Erfc.value(x), 1e-15);
+        assertThat(actual).isCloseTo(expected, offset(1e-5));
+        assertThat(Erfc.value(x)).isCloseTo(1 - actual, offset(1e-15));
 
         actual = Erf.value(-x);
         expected = -expected;
-        Assert.assertEquals(expected, actual, 1e-5);
-        Assert.assertEquals(1 - actual, Erfc.value(-x), 1e-15);
+        assertThat(actual).isCloseTo(expected, offset(1e-5));
+        assertThat(Erfc.value(-x)).isCloseTo(1 - actual, offset(1e-15));
     }
 
     @Test
@@ -78,13 +80,13 @@ public class ErfTest {
         double x = 3.291 / Math.sqrt(2);
         double actual = Erf.value(x);
         double expected = 0.999;
-        Assert.assertEquals(expected, actual, 1e-5);
-        Assert.assertEquals(1 - expected, Erfc.value(x), 1e-5);
+        assertThat(actual).isCloseTo(expected, offset(1e-5));
+        assertThat(Erfc.value(x)).isCloseTo(1 - expected, offset(1e-5));
 
         actual = Erf.value(-x);
         expected = -expected;
-        Assert.assertEquals(expected, actual, 1e-5);
-        Assert.assertEquals(1 - expected, Erfc.value(-x), 1e-5);
+        assertThat(actual).isCloseTo(expected, offset(1e-5));
+        assertThat(Erfc.value(-x)).isCloseTo(1 - expected, offset(1e-5));
     }
 
     /**
@@ -94,22 +96,22 @@ public class ErfTest {
     public void testLargeValues() {
         for (int i = 1; i < 200; i *= 10) {
             double result = Erf.value(i);
-            Assert.assertFalse(Double.isNaN(result));
-            Assert.assertTrue(result > 0 && result <= 1);
+            assertThat(Double.isNaN(result)).isFalse();
+            assertThat(result > 0 && result <= 1).isTrue();
             result = Erf.value(-i);
-            Assert.assertFalse(Double.isNaN(result));
-            Assert.assertTrue(result >= -1 && result < 0);
+            assertThat(Double.isNaN(result)).isFalse();
+            assertThat(result >= -1 && result < 0).isTrue();
             result = Erfc.value(i);
-            Assert.assertFalse(Double.isNaN(result));
-            Assert.assertTrue(result >= 0 && result < 1);
+            assertThat(Double.isNaN(result)).isFalse();
+            assertThat(result >= 0 && result < 1).isTrue();
             result = Erfc.value(-i);
-            Assert.assertFalse(Double.isNaN(result));
-            Assert.assertTrue(result >= 1 && result <= 2);
+            assertThat(Double.isNaN(result)).isFalse();
+            assertThat(result >= 1 && result <= 2).isTrue();
         }
-        Assert.assertEquals(-1, Erf.value(Double.NEGATIVE_INFINITY), 0);
-        Assert.assertEquals(1, Erf.value(Double.POSITIVE_INFINITY), 0);
-        Assert.assertEquals(2, Erfc.value(Double.NEGATIVE_INFINITY), 0);
-        Assert.assertEquals(0, Erfc.value(Double.POSITIVE_INFINITY), 0);
+        assertThat(Erf.value(Double.NEGATIVE_INFINITY)).isCloseTo(-1, offset(0));
+        assertThat(Erf.value(Double.POSITIVE_INFINITY)).isCloseTo(1, offset(0));
+        assertThat(Erfc.value(Double.NEGATIVE_INFINITY)).isCloseTo(2, offset(0));
+        assertThat(Erfc.value(Double.POSITIVE_INFINITY)).isCloseTo(0, offset(0));
     }
 
     /**
@@ -133,7 +135,7 @@ public class ErfTest {
         
         double x = -10;
         for (int i = 0; i < 41; i++) {
-            Assert.assertEquals(gnuValues[i], Erf.value(x), tol);
+            assertThat(Erf.value(x)).isCloseTo(gnuValues[i], offset(tol));
             x += 0.5d;
         }
     }

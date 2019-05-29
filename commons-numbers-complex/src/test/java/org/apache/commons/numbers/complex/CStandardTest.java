@@ -17,8 +17,10 @@
 
 package org.apache.commons.numbers.complex;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
+
 import org.apache.commons.numbers.complex.Complex;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class CStandardTest {
@@ -65,13 +67,13 @@ public class CStandardTest {
     private static final Complex NAN = Complex.ofCartesian(nan, nan);
 
     public void assertComplex(Complex c1, Complex c2, double realTol, double imagTol) {
-        Assert.assertEquals(c1.getReal(), c2.getReal(), realTol);
-        Assert.assertEquals(c1.getImaginary(), c2.getImaginary(), imagTol);
+        assertThat(c2.getReal()).isCloseTo(c1.getReal(), offset(realTol));
+        assertThat(c2.getImaginary()).isCloseTo(c1.getImaginary(), offset(imagTol));
     }
 
     public void assertComplex(Complex c1, Complex c2) {
-        Assert.assertEquals(c1.getReal(), c2.getReal(),0.0);
-        Assert.assertEquals(c1.getImaginary(), c2.getImaginary(), 0.0);
+        assertThat(c2.getReal()).isCloseTo(c1.getReal(), offset(0.0));
+        assertThat(c2.getImaginary()).isCloseTo(c1.getImaginary(), offset(0.0));
     }
 
 

@@ -16,7 +16,9 @@
  */
 package org.apache.commons.numbers.gamma;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
+
 import org.junit.Test;
 
 /**
@@ -140,7 +142,7 @@ public class LogGammaSumTest {
             final double tol = ulps * Math.ulp(expected);
             final StringBuilder builder = new StringBuilder();
             builder.append(a).append(", ").append(b);
-            Assert.assertEquals(builder.toString(), expected, actual, tol);
+            assertThat(actual).as(builder.toString()).isCloseTo(expected, offset(tol));
         }
     }
 

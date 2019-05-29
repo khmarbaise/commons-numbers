@@ -16,7 +16,9 @@
  */
 package org.apache.commons.numbers.gamma;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
+
 import org.junit.Test;
 
 /**
@@ -45,15 +47,16 @@ public class TrigammaTest {
                 100, 0.010050166663333571395
         };
         for (int i = data.length - 2; i >= 0; i -= 2) {
-            Assert.assertEquals(String.format("trigamma %.0f", data[i]), data[i + 1], Trigamma.value(data[i]), eps);
+            assertThat(Trigamma.value(data[i])).as(String.format("trigamma %.0f", data[i]))
+                .isCloseTo(data[i + 1], offset(eps));
         }
     }
 
     @Test
     public void testTrigammaNonRealArgs() {
-        Assert.assertTrue(Double.isNaN(Trigamma.value(Double.NaN)));
-        Assert.assertTrue(Double.isInfinite(Trigamma.value(Double.POSITIVE_INFINITY)));
-        Assert.assertTrue(Double.isInfinite(Trigamma.value(Double.NEGATIVE_INFINITY)));
+        assertThat(Double.isNaN(Trigamma.value(Double.NaN))).isTrue();
+        assertThat(Double.isInfinite(Trigamma.value(Double.POSITIVE_INFINITY))).isTrue();
+        assertThat(Double.isInfinite(Trigamma.value(Double.NEGATIVE_INFINITY))).isTrue();
     }
 }
 

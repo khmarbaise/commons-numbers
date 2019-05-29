@@ -16,11 +16,12 @@
  */
 package org.apache.commons.numbers.field;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -117,7 +118,6 @@ public class FieldParametricTest {
      */
     private void assertEquals(Object a,
                               Object b) {
-        Assert.assertTrue(a + " != " + b,
-                          a.equals(b));
+        assertThat(a.equals(b)).as(a + " != " + b).isTrue();
     }
 }

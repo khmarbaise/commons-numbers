@@ -16,7 +16,9 @@
  */
 package org.apache.commons.numbers.fraction;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
+
 import org.junit.Test;
 
 
@@ -41,7 +43,7 @@ public class ContinuedFractionTest {
 
         final double eps = 1e-8;
         double gr = cf.evaluate(0, eps);
-        Assert.assertEquals(1.61803399, gr, eps);
+        assertThat(gr).isCloseTo(1.61803399, offset(eps));
     }
 
     // NUMBERS-46
@@ -61,7 +63,7 @@ public class ContinuedFractionTest {
 
         final double eps = 10;
         double gr = cf.evaluate(0, eps, 1);
-        Assert.assertEquals(1.61, gr, eps);
+        assertThat(gr).isCloseTo(1.61, offset(eps));
     }
 
     // NUMBERS-46
@@ -81,6 +83,6 @@ public class ContinuedFractionTest {
 
         final double eps = 0.5;
         double gr = cf.evaluate(0, eps, 2);
-        Assert.assertEquals(1.5, gr, 0d);
+        assertThat(gr).isCloseTo(1.5, offset(0d));
     }
 }

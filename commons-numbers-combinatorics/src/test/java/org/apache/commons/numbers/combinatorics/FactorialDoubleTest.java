@@ -16,7 +16,10 @@
  */
 package org.apache.commons.numbers.combinatorics;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.data.Offset.offset;
+
 import org.junit.Test;
 
 /**
@@ -25,29 +28,29 @@ import org.junit.Test;
 public class FactorialDoubleTest {
     @Test
     public void testFactorialZero() {
-        Assert.assertEquals("0!", 1, FactorialDouble.create().value(0), 0d);
+        assertThat(FactorialDouble.create().value(0)).as("0!").isCloseTo(1, offset(0d));
     }
 
     @Test
     public void testFactorialDirect() {
         for (int i = 1; i < 21; i++) {
-            Assert.assertEquals(i + "!",
-                                factorialDirect(i), FactorialDouble.create().value(i), 0d);
+            assertThat(FactorialDouble.create().value(i)).as(i + "!")
+                .isCloseTo(factorialDirect(i), offset(0d));
         }
     }
     
     @Test
     public void testLargestFactorialDouble() {
         final int n = 170;
-        Assert.assertTrue(n + "!",
-                          Double.POSITIVE_INFINITY != FactorialDouble.create().value(n));
+        assertThat(Double.POSITIVE_INFINITY != FactorialDouble.create().value(n)).as(n + "!")
+            .isTrue();
     }
 
     @Test
     public void testFactorialDoubleTooLarge() {
         final int n = 171;
-        Assert.assertEquals(n + "!",
-                            Double.POSITIVE_INFINITY, FactorialDouble.create().value(n), 0d);
+        assertThat(FactorialDouble.create().value(n)).as(n + "!")
+            .isCloseTo(Double.POSITIVE_INFINITY, offset(0d));
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -65,8 +68,8 @@ public class FactorialDoubleTest {
 
         for (int i = 0; i < max; i++) {
             final double expected = factorialDirect(i);
-            Assert.assertEquals(i + "! ",
-                                expected, f.value(i), 100 * Math.ulp(expected));
+            assertThat(f.value(i)).as(i + "! ")
+                .isCloseTo(expected, offset(100 * Math.ulp(expected)));
         }
     }
 
@@ -77,8 +80,8 @@ public class FactorialDoubleTest {
 
         for (int i = 0; i < max; i++) {
             final double expected = factorialDirect(i);
-            Assert.assertEquals(i + "! ",
-                                expected, f.value(i), 100 * Math.ulp(expected));
+            assertThat(f.value(i)).as(i + "! ")
+                .isCloseTo(expected, offset(100 * Math.ulp(expected)));
         }
     }
 
@@ -89,22 +92,25 @@ public class FactorialDoubleTest {
         final FactorialDouble f2 = f1.withCache(2 * max);
 
         final int val = max + max / 2;
-        Assert.assertEquals(f1.value(val), f2.value(val), 0d);
+        assertThat(f2.value(val)).isCloseTo(f1.value(val), offset(0d));
     }
 
     @Test
     public void testZeroCache() {
         // Ensure that no exception is thrown.
         final FactorialDouble f = FactorialDouble.create().withCache(0);
-        Assert.assertEquals(1, f.value(0), 0d);
-        Assert.assertEquals(1, f.value(1), 0d);
+        assertThat(f.value(0)).isCloseTo(1, offset(0d));
+        assertThat(f.value(1)).isCloseTo(1, offset(0d));
     }
 
     @Test
     public void testUselessCache() {
         // Ensure that no exception is thrown.
         LogFactorial.create().withCache(1);
+        assertThatCode(() -> LogFactorial.create().withCache(1)).doesNotThrowAnyException();
+
         LogFactorial.create().withCache(2);
+        assertThatCode(() -> LogFactorial.create().withCache(2)).doesNotThrowAnyException();
     }
 
     @Test
@@ -114,7 +120,7 @@ public class FactorialDoubleTest {
         final FactorialDouble f2 = f1.withCache(max / 2);
 
         final int val = max / 4;
-        Assert.assertEquals(f1.value(val), f2.value(val), 0d);
+        assertThat(f2.value(val)).isCloseTo(f1.value(val), offset(0d));
     }
 
     /**

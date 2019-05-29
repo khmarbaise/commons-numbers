@@ -16,7 +16,9 @@
  */
 package org.apache.commons.numbers.gamma;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
+
 import org.junit.Test;
 
 /**
@@ -26,18 +28,18 @@ public class DigammaTest {
     @Test
     public void testDigammaLargeArgs() {
         double eps = 1e-8;
-        Assert.assertEquals(4.6001618527380874002, Digamma.value(100), eps);
-        Assert.assertEquals(3.9019896734278921970, Digamma.value(50), eps);
-        Assert.assertEquals(2.9705239922421490509, Digamma.value(20), eps);
-        Assert.assertEquals(2.9958363947076465821, Digamma.value(20.5), eps);
-        Assert.assertEquals(2.2622143570941481605, Digamma.value(10.1), eps);
-        Assert.assertEquals(2.1168588189004379233, Digamma.value(8.8), eps);
-        Assert.assertEquals(1.8727843350984671394, Digamma.value(7), eps);
-        Assert.assertEquals(0.42278433509846713939, Digamma.value(2), eps);
-        Assert.assertEquals(-100.56088545786867450, Digamma.value(0.01), eps);
-        Assert.assertEquals(-4.0390398965921882955, Digamma.value(-0.8), eps);
-        Assert.assertEquals(4.2003210041401844726, Digamma.value(-6.3), eps);
-        Assert.assertEquals(-3.110625123035E-5, Digamma.value(1.4616), eps);
+        assertThat(Digamma.value(100)).isCloseTo(4.6001618527380874002, offset(eps));
+        assertThat(Digamma.value(50)).isCloseTo(3.9019896734278921970, offset(eps));
+        assertThat(Digamma.value(20)).isCloseTo(2.9705239922421490509, offset(eps));
+        assertThat(Digamma.value(20.5)).isCloseTo(2.9958363947076465821, offset(eps));
+        assertThat(Digamma.value(10.1)).isCloseTo(2.2622143570941481605, offset(eps));
+        assertThat(Digamma.value(8.8)).isCloseTo(2.1168588189004379233, offset(eps));
+        assertThat(Digamma.value(7)).isCloseTo(1.8727843350984671394, offset(eps));
+        assertThat(Digamma.value(2)).isCloseTo(0.42278433509846713939, offset(eps));
+        assertThat(Digamma.value(0.01)).isCloseTo(-100.56088545786867450, offset(eps));
+        assertThat(Digamma.value(-0.8)).isCloseTo(-4.0390398965921882955, offset(eps));
+        assertThat(Digamma.value(-6.3)).isCloseTo(4.2003210041401844726, offset(eps));
+        assertThat(Digamma.value(1.4616)).isCloseTo(-3.110625123035E-5, offset(eps));
     }
 
     @Test
@@ -57,16 +59,16 @@ public class DigammaTest {
 
     @Test
     public void testDigammaNonRealArgs() {
-        Assert.assertTrue(Double.isNaN(Digamma.value(Double.NaN)));
-        Assert.assertTrue(Double.isInfinite(Digamma.value(Double.POSITIVE_INFINITY)));
-        Assert.assertTrue(Double.isInfinite(Digamma.value(Double.NEGATIVE_INFINITY)));
+        assertThat(Double.isNaN(Digamma.value(Double.NaN))).isTrue();
+        assertThat(Double.isInfinite(Digamma.value(Double.POSITIVE_INFINITY))).isTrue();
+        assertThat(Double.isInfinite(Digamma.value(Double.NEGATIVE_INFINITY))).isTrue();
     }
 
     private void checkRelativeError(String msg,
                                     double expected,
                                     double actual,
                                     double tolerance) {
-        Assert.assertEquals(msg, expected, actual, Math.abs(tolerance * actual));
+        assertThat(actual).as(msg).isCloseTo(expected, offset(Math.abs(tolerance * actual)));
     }
 }
 
