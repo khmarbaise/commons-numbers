@@ -411,15 +411,18 @@ public class ComplexUtilsTest {
 
         // Extract interleaved double array from complex array, index 3
         TestUtils.assertSame(new double[]{6d, 7d}, ComplexUtils.extractInterleavedFromComplexArray(c, 3));
-        assertThat(ComplexUtils.extractInterleavedFromComplexArray(c, 3)).containsExactly(6d, 7d);
+        assertThat(ComplexUtils.extractInterleavedFromComplexArray(c, 3))
+            .containsExactly(6d, 7d);
 
         // Extract interleaved float array from complex array, index 3
-        assertThat(ComplexUtils.extractInterleavedFloatFromComplexArray(c, 3)).containsExactly(6f, 7f);
         TestUtils.assertSame(new float[]{6f, 7f}, ComplexUtils.extractInterleavedFloatFromComplexArray(c, 3));
+        assertThat(ComplexUtils.extractInterleavedFloatFromComplexArray(c, 3))
+            .containsExactly(6f, 7f);
 
         // Extract complex from interleaved float array, index 3
         TestUtils.assertSame(Complex.ofCartesian(6, 7), ComplexUtils.extractComplexFromInterleavedArray(f, 3));
-        assertThat(ComplexUtils.extractComplexFromInterleavedArray(f, 3)).isEqualTo(Complex.ofCartesian(6, 7));
+        assertThat(ComplexUtils.extractComplexFromInterleavedArray(f, 3))
+            .isEqualTo(Complex.ofCartesian(6, 7));
 
         // Extract interleaved double from complex array, index 3
         TestUtils.assertEquals(msg, new double[] { 6, 7 }, ComplexUtils.extractInterleavedFromComplexArray(c, 3),
@@ -728,6 +731,7 @@ public class ComplexUtilsTest {
             for (Complex[] c1 : c2) {
                 for (Complex c0 : c1) {
                     TestUtils.assertEquals(Complex.ofCartesian(0, 0), c0, Math.ulp(0));
+                    assertThat(c0).isCloseTo(Complex.ofCartesian(0, 0), Math.ulp(0));
                 }
             }
         }
