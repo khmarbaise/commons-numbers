@@ -49,18 +49,10 @@ public class FractionTest {
         assertFraction(-1, 2, new Fraction(2, -4));
 
         // overflow
-        try {
-            new Fraction(Integer.MIN_VALUE, -1);
-            fail("XXXX");
-        } catch (ArithmeticException ex) {
-            // success
-        }
-        try {
-            new Fraction(1, Integer.MIN_VALUE);
-            fail("XXXX");
-        } catch (ArithmeticException ex) {
-            // success
-        }
+        assertThatExceptionOfType(ArithmeticException.class)
+            .isThrownBy(() -> new Fraction(Integer.MIN_VALUE, -1));
+        assertThatExceptionOfType(ArithmeticException.class)
+            .isThrownBy(() -> new Fraction(1, Integer.MIN_VALUE));
 
         assertFraction(0, 1, new Fraction(0.00000000000001));
         assertFraction(2, 5, new Fraction(0.40000000000001));
@@ -146,14 +138,9 @@ public class FractionTest {
     }
 
     private void checkIntegerOverflow(double a) {
-        try {
-            @SuppressWarnings("unused")
-            Fraction f = new Fraction(a, 1.0e-12, 1000);
-            //System.out.println(f.getNumerator() + "/" + f.getDenominator());
-            fail("an exception should have been thrown");
-        } catch (ArithmeticException ignored) {
-            // expected behavior
-        }
+        assertThatExceptionOfType(ArithmeticException.class)
+            .isThrownBy(() -> new Fraction(a, 1.0e-12, 1000))
+            .withMessageMatching("Unable to convert (.*?) to fraction after (.*?) iterations");
     }
 
     @Test
