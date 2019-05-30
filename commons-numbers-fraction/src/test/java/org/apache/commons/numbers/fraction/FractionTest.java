@@ -16,12 +16,14 @@
  */
 package org.apache.commons.numbers.fraction;
 
+import static org.apache.commons.numbers.fraction.FractionAssert.assertThat;
+import static org.apache.commons.numbers.fraction.FractionAssert.assertThatArithmeticException;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.data.Offset.offset;
 
 import org.apache.commons.numbers.core.TestUtils;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 
@@ -36,7 +38,10 @@ public class FractionTest {
 
     @Test
     public void testConstructor() {
-        FractionAssert.assertThat(new Fraction(0, 1)).hasNumerator(0).and().hasDenominator(1);
+        assertThat(new Fraction(0, 1))
+            .hasNumerator(0)
+            .and()
+            .hasDenominator(1);
 
         assertFraction(0, 1, new Fraction(0, 1));
         assertFraction(0, 1, new Fraction(0, 2));
@@ -49,9 +54,9 @@ public class FractionTest {
         assertFraction(-1, 2, new Fraction(2, -4));
 
         // overflow
-        assertThatExceptionOfType(ArithmeticException.class)
+        assertThatArithmeticException()
             .isThrownBy(() -> new Fraction(Integer.MIN_VALUE, -1));
-        assertThatExceptionOfType(ArithmeticException.class)
+        assertThatArithmeticException()
             .isThrownBy(() -> new Fraction(1, Integer.MIN_VALUE));
 
         assertFraction(0, 1, new Fraction(0.00000000000001));
@@ -62,7 +67,7 @@ public class FractionTest {
     @Test
     public void testGoldenRatio() {
         // the golden ratio is notoriously a difficult number for continuous fraction
-        assertThatExceptionOfType(ArithmeticException.class)
+        assertThatArithmeticException()
             .isThrownBy(() -> new Fraction((1 + Math.sqrt(5)) / 2, 1.0e-12, 25))
             .withMessage("Unable to convert 1.618 to fraction after 25 iterations");
     }
@@ -138,7 +143,7 @@ public class FractionTest {
     }
 
     private void checkIntegerOverflow(double a) {
-        assertThatExceptionOfType(ArithmeticException.class)
+        assertThatArithmeticException()
             .isThrownBy(() -> new Fraction(a, 1.0e-12, 1000))
             .withMessageMatching("Unable to convert (.*?) to fraction after (.*?) iterations");
     }
@@ -424,7 +429,7 @@ public class FractionTest {
         f1 = new Fraction(0, 5);
         f2 = new Fraction(2, 7);
         Fraction f = f1.divide(f2);
-        assertThat(f).isSameAs(Fraction.ZERO);
+        Assertions.assertThat(f).isSameAs(Fraction.ZERO);
 
         f1 = new Fraction(2, 7);
         f2 = Fraction.ONE;

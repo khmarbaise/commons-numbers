@@ -111,7 +111,7 @@ class TestUtils {
      * both NaN or infinities of same sign, or identical floating point values.
      */
     public static void assertSame(double expected, double actual) {
-        assertThat(actual).isCloseTo(expected, offset(0));
+        assertThat(actual).isCloseTo(expected, offset(0d));
     }
 
     /**

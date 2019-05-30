@@ -108,8 +108,8 @@ public class ComplexTest {
         assertThat(z.getReal()).isCloseTo(8.0, offset(1.0e-5));
         assertThat(z.getImaginary()).isCloseTo(10.0, offset(1.0e-5));
 
-        assertThat(z.getReal()).isEqualTo(8.0, EPSILON);
-        assertThat(z.getImaginary()).isEqualTo(10.0, EPSILON);
+        assertThat(z.getReal()).isEqualTo(8.0, Offset.offset(1.0e-19));
+        assertThat(z.getImaginary()).isEqualTo(10.0, Offset.offset(1.0e-19));
     }
 
     @Test
@@ -117,8 +117,8 @@ public class ComplexTest {
         Complex x = Complex.ofCartesian(1, 1);
         Complex z = Complex.ofCartesian(inf, 0);
         Complex w = x.add(z);
-        assertThat(1).isCloseTo(w.getImaginary(), offset(0));
-        assertThat(w.getReal()).isCloseTo(inf, offset(0));
+        assertThat(w.getImaginary()).isCloseTo(1d, offset(0d));
+        assertThat(w.getReal()).isCloseTo(inf, offset(0d));
 
         x = Complex.ofCartesian(neginf, 0);
         assertThat(Double.isNaN(x.add(z).getReal())).isTrue();
@@ -170,9 +170,9 @@ public class ComplexTest {
     @Test
     public void testConjugateInfiinite() {
         Complex z = Complex.ofCartesian(0, inf);
-        assertThat(z.conjugate().getImaginary()).isCloseTo(neginf, offset(0));
+        assertThat(z.conjugate().getImaginary()).isCloseTo(neginf, offset(0d));
         z = Complex.ofCartesian(0, neginf);
-        assertThat(z.conjugate().getImaginary()).isCloseTo(inf, offset(0));
+        assertThat(z.conjugate().getImaginary()).isCloseTo(inf, offset(0d));
     }
 
     @Test
@@ -224,7 +224,7 @@ public class ComplexTest {
     public void testDivideNaNInf() {
        Complex z = oneInf.divide(Complex.ONE);
        assertThat(Double.isNaN(z.getReal())).isTrue();
-       assertThat(z.getImaginary()).isCloseTo(inf, offset(0));
+       assertThat(z.getImaginary()).isCloseTo(inf, offset(0d));
 
        z = negInfNegInf.divide(oneNaN);
        assertThat(Double.isNaN(z.getReal())).isTrue();
@@ -367,8 +367,8 @@ public class ComplexTest {
         Complex x = Complex.ofCartesian(1, 1);
         Complex z = Complex.ofCartesian(neginf, 0);
         Complex w = x.subtract(z);
-        assertThat(1).isCloseTo(w.getImaginary(), offset(0));
-        assertThat(w.getReal()).isCloseTo(inf, offset(0));
+        assertThat(w.getImaginary()).isCloseTo(1, offset(0d));
+        assertThat(w.getReal()).isCloseTo(inf, offset(0d));
 
         x = Complex.ofCartesian(neginf, 0);
         assertThat(Double.isNaN(x.subtract(z).getReal())).isTrue();

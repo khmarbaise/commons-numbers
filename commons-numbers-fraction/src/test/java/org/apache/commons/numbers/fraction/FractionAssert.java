@@ -2,6 +2,7 @@ package org.apache.commons.numbers.fraction;
 
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.ThrowableTypeAssert;
 
 /**
  * Custom Assertion for Handling of Fraction class.
@@ -39,4 +40,9 @@ public class FractionAssert extends AbstractAssert<FractionAssert, Fraction> {
 
     return myself;
   }
+
+  public static <T extends Throwable> ThrowableTypeAssert<ArithmeticException> assertThatArithmeticException() {
+    return Assertions.assertThatExceptionOfType(ArithmeticException.class);
+  }
+
 }

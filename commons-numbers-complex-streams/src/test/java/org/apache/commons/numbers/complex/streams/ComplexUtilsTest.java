@@ -17,6 +17,7 @@
 
 package org.apache.commons.numbers.complex.streams;
 
+import static org.apache.commons.numbers.complex.streams.ComplexAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
@@ -24,6 +25,8 @@ import static org.assertj.core.data.Offset.offset;
 
 import org.apache.commons.numbers.complex.Complex;
 
+import org.assertj.core.api.Assertions;
+import org.assertj.core.data.Offset;
 import org.junit.Test;
 
 /**
@@ -271,7 +274,8 @@ public class ComplexUtilsTest {
         Complex[] observed1D = ComplexUtils.polar2Complex(r1D, theta1D);
         assertThat(observed1D.length).isEqualTo(r1D.length);
         for (int i = 0; i < r1D.length; i++) {
-            assertThat(observed1D[i]).isEqualTo(ComplexUtils.polar2Complex(r1D[i], theta1D[i]));
+            Assertions
+                .assertThat(observed1D[i]).isEqualTo(ComplexUtils.polar2Complex(r1D[i], theta1D[i]));
         }
 
         // 2D
@@ -313,23 +317,26 @@ public class ComplexUtilsTest {
 
     @Test
     public void testPolar2ComplexIllegalModulus() {
-        assertThatIllegalStateException().isThrownBy(() -> ComplexUtils.polar2Complex(-1, 0));
+        assertThatIllegalArgumentException().isThrownBy(() -> ComplexUtils.polar2Complex(-1, 0));
     }
 
     @Test
     public void testPolar2ComplexIllegalModulus1D() {
         assertThatIllegalArgumentException().isThrownBy(
-          () -> ComplexUtils.polar2Complex(new double[]{0, -1, 2}, new double[]{0, 1, 2}));
+            () -> ComplexUtils.polar2Complex(new double[]{0, -1, 2}, new double[]{0, 1, 2}))
+            .withMessage("Modulus is negative: -1.0");
     }
 
     @Test
     public void testPolar2ComplexIllegalModulus2D() {
         assertThatIllegalArgumentException().isThrownBy(() -> ComplexUtils
             .polar2Complex(new double[][]{{0, 2, 2}, {0, -1, 2}},
-              new double[][]{{0, 1, 2}, {0, 1, 2}}));
+              new double[][]{{0, 1, 2}, {0, 1, 2}}))
+            .withMessage("Modulus is negative: -1.0");
+        ;
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPolar2ComplexIllegalModulus3D() {
         assertThatIllegalArgumentException().isThrownBy(() -> ComplexUtils
             .polar2Complex(new double[][][]{{{0, 2, 2}}, {{0, -1, 2}}},
@@ -339,13 +346,13 @@ public class ComplexUtilsTest {
     @Test
     public void testPolar2ComplexNaN() {
         TestUtils.assertSame(NAN, ComplexUtils.polar2Complex(nan, 1));
-        ComplexAssert.assertThat(ComplexUtils.polar2Complex(nan, 1)).isNaN();
+        assertThat(ComplexUtils.polar2Complex(nan, 1)).isNaN();
 
         TestUtils.assertSame(NAN, ComplexUtils.polar2Complex(1, nan));
-        ComplexAssert.assertThat(ComplexUtils.polar2Complex(1, nan)).isNaN();
+        assertThat(ComplexUtils.polar2Complex(1, nan)).isNaN();
 
         TestUtils.assertSame(NAN, ComplexUtils.polar2Complex(nan, nan));
-        ComplexAssert.assertThat(ComplexUtils.polar2Complex(nan, nan)).isNaN();
+        assertThat(ComplexUtils.polar2Complex(nan, nan)).isNaN();
     }
 
     @Test
@@ -390,18 +397,30 @@ public class ComplexUtilsTest {
         TestUtils.assertSame(6, ComplexUtils.extractRealFromComplexArray(c, 3));
         // Extract real float from complex array, index 3
         TestUtils.assertSame(6, ComplexUtils.extractRealFloatFromComplexArray(c, 3));
+
         // Extract real double from complex array, index 3
         TestUtils.assertSame(7, ComplexUtils.extractImaginaryFromComplexArray(c, 3));
+        assertThat(ComplexUtils.extractImaginaryFromComplexArray(c, 3)).isEqualTo(7);
+
         // Extract real float from complex array, index 3
         TestUtils.assertSame(7, ComplexUtils.extractImaginaryFloatFromComplexArray(c, 3));
+        assertThat(ComplexUtils.extractImaginaryFloatFromComplexArray(c, 3)).isEqualTo(7);
+
         // Extract complex from interleaved double array, index 3
         TestUtils.assertSame(Complex.ofCartesian(6, 7), ComplexUtils.extractComplexFromInterleavedArray(d, 3));
+
         // Extract interleaved double array from complex array, index 3
         TestUtils.assertSame(new double[]{6d, 7d}, ComplexUtils.extractInterleavedFromComplexArray(c, 3));
+        assertThat(ComplexUtils.extractInterleavedFromComplexArray(c, 3)).containsExactly(6d, 7d);
+
         // Extract interleaved float array from complex array, index 3
+        assertThat(ComplexUtils.extractInterleavedFloatFromComplexArray(c, 3)).containsExactly(6f, 7f);
         TestUtils.assertSame(new float[]{6f, 7f}, ComplexUtils.extractInterleavedFloatFromComplexArray(c, 3));
+
         // Extract complex from interleaved float array, index 3
         TestUtils.assertSame(Complex.ofCartesian(6, 7), ComplexUtils.extractComplexFromInterleavedArray(f, 3));
+        assertThat(ComplexUtils.extractComplexFromInterleavedArray(f, 3)).isEqualTo(Complex.ofCartesian(6, 7));
+
         // Extract interleaved double from complex array, index 3
         TestUtils.assertEquals(msg, new double[] { 6, 7 }, ComplexUtils.extractInterleavedFromComplexArray(c, 3),
                 Math.ulp(1));

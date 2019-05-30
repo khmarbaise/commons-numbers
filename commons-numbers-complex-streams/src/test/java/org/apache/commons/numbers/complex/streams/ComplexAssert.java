@@ -3,6 +3,7 @@ package org.apache.commons.numbers.complex.streams;
 import org.apache.commons.numbers.complex.Complex;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.ThrowableTypeAssert;
 
 public class ComplexAssert extends AbstractAssert<ComplexAssert, Complex> {
 
@@ -20,4 +21,5 @@ public class ComplexAssert extends AbstractAssert<ComplexAssert, Complex> {
     Assertions.assertThat(myself.actual.getImaginary()).isNaN();
     return myself;
   }
+
 }
