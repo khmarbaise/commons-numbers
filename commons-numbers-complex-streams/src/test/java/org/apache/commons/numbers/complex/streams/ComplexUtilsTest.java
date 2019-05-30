@@ -427,6 +427,9 @@ public class ComplexUtilsTest {
         // Extract interleaved double from complex array, index 3
         TestUtils.assertEquals(msg, new double[] { 6, 7 }, ComplexUtils.extractInterleavedFromComplexArray(c, 3),
                 Math.ulp(1));
+        assertThat(ComplexUtils.extractInterleavedFromComplexArray(c, 3))
+            .containsExactly(new double[]{6, 7}, Offset.offset(Math.ulp(1d)));
+
         // Extract interleaved float from complex array, index 3
         TestUtils.assertEquals(msg, new double[] { 6, 7 }, ComplexUtils.extractInterleavedFromComplexArray(c, 3),
                 Math.ulp(1));
